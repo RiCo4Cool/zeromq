@@ -14,17 +14,18 @@ sock.on("message", function (topic, message) {
     topic.toString(),
     "containing message:",
     parseString(zlib.gunzipSync(message).toString(), function (err, result) {
-if (result["VV_TM_PUSH"]["KV6posinfo"][0].INIT != undefined) {
-      console.log(
-        result["VV_TM_PUSH"]["KV6posinfo"][0].INIT
-      );
-	fs.appendFile('arr.txt', JSON.stringify(result["VV_TM_PUSH"]["KV6posinfo"][0].INIT) + "\n", 
-	function(err) {
-	if (err) throw err;
-	console.log('Saved!');
-    });
- 
-}
-})
-)}
+	if (result["VV_TM_PUSH"]["KV6posinfo"][0].INIT != undefined) {
+		for (x = 0; x < result["VV_TM_PUSH"]["KV6posinfo"][0].INIT.length; x++) {
+		console.log(
+        	result["VV_TM_PUSH"]["KV6posinfo"][0].INIT[x]
+		)
+		fs.appendFile('arr.txt', JSON.stringify(result["VV_TM_PUSH"]["KV6posinfo"][0].INIT[x]) + "\n",
+			function(err) {
+				if (err) throw err;
+				console.log('Saved!');
+				});
+			};
+					}
+				})
+		)}
 );
