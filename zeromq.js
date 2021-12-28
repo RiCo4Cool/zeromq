@@ -24,6 +24,13 @@ sock.on("message", function (topic, message) {
 				if (err) throw err;
 				console.log('Saved!');
 				});
+		for (x = 0; x < result["VV_TM_PUSH"]["KV6posinfo"][0].END.length; x++) {
+			fs.appendFile('arr.txt', "END: " + JSON.stringify(result["VV_TM_PUSH"]["KV6posinfo"][0].END[x]) + "\n",
+				function(err) {
+					if (err) throw err;
+					console.log('Saved!');
+					});
+		}
 			};
 					}
 				})
