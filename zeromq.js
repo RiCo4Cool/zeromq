@@ -17,9 +17,9 @@ sock.on("message", function (topic, message) {
     parseString(zlib.gunzipSync(message).toString(), function (err, result) {
 if (result["VV_TM_PUSH"]["KV6posinfo"][0].INIT != undefined) {
       console.log(
-        util.inspect(result["VV_TM_PUSH"]["KV6posinfo"][0].INIT, false, null, true)
+        result["VV_TM_PUSH"]["KV6posinfo"][0].INIT
       );
-	fs.appendFile('arr.txt', JSON.stringify(result["VV_TM_PUSH"]["KV6posinfo"][0].INIT), 
+	fs.appendFile('arr.txt', JSON.stringify(result["VV_TM_PUSH"]["KV6posinfo"][0].INIT) + "\n", 
 	function(err) {
 	if (err) throw err;
 	console.log('Saved!');
