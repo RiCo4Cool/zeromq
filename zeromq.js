@@ -1,4 +1,3 @@
-const util = require("util");
 var fs = require("fs");
 var parseString = require("xml2js").parseString;
 var zlib = require("zlib");
@@ -26,4 +25,6 @@ if (result["VV_TM_PUSH"]["KV6posinfo"][0].INIT != undefined) {
     });
  
 }
-}))});
+})
+)}
+);
