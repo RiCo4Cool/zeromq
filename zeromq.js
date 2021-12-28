@@ -19,7 +19,7 @@ sock.on("message", function (topic, message) {
 		console.log(
         	result["VV_TM_PUSH"]["KV6posinfo"][0].INIT[x]
 		)
-		fs.appendFile('arr.txt', JSON.stringify(result["VV_TM_PUSH"]["KV6posinfo"][0].INIT[x]) + "\n",
+		fs.appendFile('arr.txt', "INIT: " + JSON.stringify(result["VV_TM_PUSH"]["KV6posinfo"][0].INIT[x]) + "\n",
 			function(err) {
 				if (err) throw err;
 				console.log('Saved!');
