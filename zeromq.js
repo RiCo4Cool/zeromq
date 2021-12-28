@@ -48,7 +48,7 @@ sock.on("message", function (topic, message) {
                 "arr.txt",
                 "END: " +
                   JSON.stringify(
-                    result["VV_TM_PUSH"]["KV6posinfo"][0].INIT[x]
+                    result["VV_TM_PUSH"]["KV6posinfo"][0].END[x]
                   ) +
                   "\n",
                 function (err) {
