@@ -15,7 +15,7 @@ sock.on("message", function (topic, message) {
         if (
           result["VV_TM_PUSH"]["KV6posinfo"][0].INIT[
             x
-          ].lineplanningnumber[0].includes(
+          ].lineplanningnumber.includes(
             "23325" || "23326" || "23327" || "23400"
           )
         ) {
@@ -40,7 +40,7 @@ sock.on("message", function (topic, message) {
             if (
               result["VV_TM_PUSH"]["KV6posinfo"][0].END[
                 x
-              ].lineplanningnumber[0].includes(
+              ].lineplanningnumber.includes(
                 "23325" || "23326" || "23327" || "23400"
               )
             ) {
