@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^10.0.0",
+    "mongodb": "^4.2.2",
     "pm2": "^5.1.2",
     "xml2js": "^0.4.23",
     "zeromq": "^5.2.8",

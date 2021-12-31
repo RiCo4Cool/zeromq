@@ -1,3 +1,4 @@
+require("dotenv").config();
 var fs = require("fs");
 var parseString = require("xml2js").parseString;
 var zlib = require("zlib");
@@ -9,6 +10,29 @@ sock.connect("tcp://pubsub.besteffort.ndovloket.nl:7658");
 sock.subscribe("/ARR/KV6posinfo");
 console.log("Subscriber connected to port 7658");
 
+async function updateDB(init) {
+  const { MongoClient } = require("mongodb");
+  const uri =
+    "mongodb+srv://" +
+    process.env.DB_NAME +
+    ":" +
+    process.env.DB_PASSW +
+    "@cluster0.e56ou.mongodb.net/Busoht?retryWrites=true&w=majority";
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  await client.connect();
+  console.log("ingelogd in DB");
+  const collection = client.db("Busoht").collection("oml");
+  // perform actions on the collection object
+  await collection.insertOne(
+    init
+    // { $set: { barcode: barcode, product: "productname" } }
+  );
+  client.close();
+}
+
 setInterval(function oht() {
   if (init != undefined) {
     for (x = 0; x < init.length; x++) {
@@ -19,14 +43,11 @@ setInterval(function oht() {
         init[x]["lineplanningnumber"][0] == "23328" ||
         init[x]["lineplanningnumber"][0] == "23400"
       ) {
-        fs.appendFile(
-          "arr.txt",
-          JSON.stringify(init[x]) + "\n",
-          (err) => {
-            if (err) throw err;
-          }
-        );
+        fs.appendFile("arr.txt", JSON.stringify(init[x]) + "\n", (err) => {
+          if (err) throw err;
+        });
         console.log(init[x]);
+        updateDB(init[x]);
         init.splice(x, 1);
       }
     }
