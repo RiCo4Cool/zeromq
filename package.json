@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "pm2": "^5.1.2",
     "xml2js": "^0.4.23",
     "zeromq": "^5.2.8",
     "zlib": "^1.0.5"
