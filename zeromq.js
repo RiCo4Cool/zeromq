@@ -6,6 +6,7 @@ const { MongoClient } = require("mongodb");
 var zmq = require("zeromq");
 var sock = zmq.socket("sub");
 var moment = require("moment");
+var SlackWebhook = require("slack-webhook");
 var init = [];
 var kv17 = [];
 var initToDB = {};
@@ -103,6 +104,10 @@ setInterval(function oht() {
       if (err) throw err;
     });
     updateDBMut('{"KV17JOURNEY":' + JSON.stringify(kv17) + "}\n");
+    var slack = new SlackWebhook(process.env.SLACKURL);
+    slack.send(JSON.stringify(kv17)).catch(function (err) {
+      console.log(err);
+    });
     kv17 = "";
   }
 }, 5000);
