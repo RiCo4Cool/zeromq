@@ -2,6 +2,7 @@ require("dotenv").config();
 var fs = require("fs");
 var parseString = require("xml2js").parseString;
 var zlib = require("zlib");
+const { MongoClient } = require("mongodb");
 var zmq = require("zeromq");
 var sock = zmq.socket("sub");
 var moment = require("moment");
@@ -14,7 +15,6 @@ sock.subscribe("/ARR/");
 console.log("Subscriber connected to port 7658");
 
 async function updateDB(init) {
-  const { MongoClient } = require("mongodb");
   const uri =
     "mongodb+srv://" +
     process.env.DB_NAME +
@@ -28,6 +28,23 @@ async function updateDB(init) {
   await client.connect();
   const collection = client.db("Busoht").collection("oml");
   await collection.insertOne(JSON.parse(init));
+  client.close();
+}
+
+async function updateDBMut(mut) {
+  const uri =
+    "mongodb+srv://" +
+    process.env.DB_NAME +
+    ":" +
+    process.env.DB_PASSW +
+    "@cluster0.e56ou.mongodb.net/Busoht?retryWrites=true&w=majority";
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  await client.connect();
+  const collection = client.db("Busoht").collection("mut");
+  await collection.insertOne(JSON.parse(mut));
   client.close();
 }
 
@@ -57,7 +74,7 @@ setInterval(function oht() {
           JSON.stringify(init[x]["lineplanningnumber"][0]) +
           ", " +
           '"journeynumber": ' +
-          JSON.stringify(init[x]["blockcode"][0]) +
+          JSON.stringify(init[x]["journeynumber"][0]) +
           ", " +
           '"blockcode": ' +
           JSON.stringify(init[x]["blockcode"][0]) +
@@ -73,10 +90,19 @@ setInterval(function oht() {
       }
     }
   }
-  if (kv17 != undefined && kv17 != "") {
+  if (
+    kv17 != undefined &&
+    kv17 != "" &&
+    (kv17[0]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23325" ||
+      kv17[0]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23326" ||
+      kv17[0]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23327" ||
+      kv17[0]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23328" ||
+      kv17[0]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23400")
+  ) {
     fs.appendFile("kv17.txt", JSON.stringify(kv17) + "\n", (err) => {
       if (err) throw err;
     });
+    updateDBMut('{"KV17JOURNEY":' + JSON.stringify(kv17) + "}\n");
     kv17 = "";
   }
 }, 5000);
