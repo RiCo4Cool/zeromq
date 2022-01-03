@@ -117,6 +117,7 @@ sock.on("message", function (topic, message) {
     if (err) throw err;
 
     if (
+      result["VV_TM_PUSH"] != undefined &&
       result["VV_TM_PUSH"]["KV6posinfo"] != undefined &&
       result["VV_TM_PUSH"]["KV6posinfo"][0].INIT != undefined
     ) {
