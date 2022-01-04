@@ -8,6 +8,7 @@ var sock = zmq.socket("sub");
 var moment = require("moment");
 var SlackWebhook = require("slack-webhook");
 var init = [];
+var kv15 = [];
 var kv17 = [];
 var initToDB = {};
 
@@ -110,6 +111,12 @@ setInterval(function oht() {
     });
     kv17 = "";
   }
+  if (kv15 != undefined && kv15 != [] && kv15 != "") {
+    fs.appendFile("kv15.txt", JSON.stringify(kv15) + "\n", (err) => {
+      if (err) throw err;
+    });
+    kv15 = "";
+  }
 }, 5000);
 
 sock.on("message", function (topic, message) {
@@ -125,8 +132,17 @@ sock.on("message", function (topic, message) {
         init.push(result["VV_TM_PUSH"]["KV6posinfo"][0].INIT[x]);
       }
     }
-    if (result["VV_TM_PUSH"]["KV17cvlinfo"] != undefined) {
+    if (
+      result["VV_TM_PUSH"] != undefined &&
+      result["VV_TM_PUSH"]["KV17cvlinfo"] != undefined
+    ) {
       kv17 = result["VV_TM_PUSH"]["KV17cvlinfo"];
+    }
+    if (
+      result["VV_TM_PUSH"] != undefined &&
+      result["VV_TM_PUSH"]["KV15messages"] != undefined
+    ) {
+      kv15 = result["VV_TM_PUSH"]["KV15messages"];
     }
   });
 });
