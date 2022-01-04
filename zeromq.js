@@ -111,6 +111,19 @@ setInterval(function oht() {
     });
     kv17 = "";
   }
+  if (kv17 != undefined && kv17 != "") {
+    for (x = 0; x < kv17.length; x++) {
+      fs.appendFile(
+        "kv17nl.txt",
+        "start: " + JSON.stringify(kv17[x]) + "\n",
+        (err) => {
+          if (err) throw err;
+        }
+      );
+    }
+
+    kv17 = "";
+  }
   if (kv15 != undefined && kv15 != [] && kv15 != "") {
     fs.appendFile("kv15.txt", JSON.stringify(kv15) + "\n", (err) => {
       if (err) throw err;
