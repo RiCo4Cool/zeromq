@@ -92,38 +92,31 @@ setInterval(function oht() {
       }
     }
   }
-  if (
-    kv17 != undefined &&
-    kv17 != "" &&
-    (kv17[0]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23325" ||
-      kv17[0]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23326" ||
-      kv17[0]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23327" ||
-      kv17[0]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23328" ||
-      kv17[0]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23400")
-  ) {
-    fs.appendFile("kv17.txt", JSON.stringify(kv17) + "\n", (err) => {
+  if (kv17 != undefined && kv17 != "") {
+    fs.appendFile("kv17nl.txt", JSON.stringify(kv17) + "\n", (err) => {
       if (err) throw err;
     });
-    updateDBMut('{"KV17JOURNEY":' + JSON.stringify(kv17) + "}\n");
-    var slack = new SlackWebhook(process.env.SLACKURL);
-    slack.send(JSON.stringify(kv17)).catch(function (err) {
-      console.log(err);
-    });
-    kv17 = "";
-  }
-  if (kv17 != undefined && kv17 != "") {
     for (x = 0; x < kv17.length; x++) {
-      fs.appendFile(
-        "kv17nl.txt",
-        "start: " + JSON.stringify(kv17[x]) + "\n",
-        (err) => {
+      if (
+        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23325" ||
+        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23326" ||
+        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23327" ||
+        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23328" ||
+        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23400"
+      ) {
+        fs.appendFile("kv17.txt", JSON.stringify(kv17[x]) + "\n", (err) => {
           if (err) throw err;
-        }
-      );
+        });
+        updateDBMut('{"KV17JOURNEY":' + JSON.stringify(kv17[x]) + "}\n");
+        var slack = new SlackWebhook(process.env.SLACKURL);
+        slack.send(JSON.stringify(kv17)).catch(function (err) {
+          console.log(err);
+        });
+        kv17 = "";
+      }
     }
-
-    kv17 = "";
   }
+
   if (kv15 != undefined && kv15 != [] && kv15 != "") {
     fs.appendFile("kv15.txt", JSON.stringify(kv15) + "\n", (err) => {
       if (err) throw err;
