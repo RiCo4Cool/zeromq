@@ -53,43 +53,44 @@ async function updateDBMut(mut) {
 setInterval(function oht() {
   if (init != undefined) {
     for (x = 0; x < init.length; x++) {
-      if (
-        init[x]["lineplanningnumber"][0] == "23325" ||
-        init[x]["lineplanningnumber"][0] == "23326" ||
-        init[x]["lineplanningnumber"][0] == "23327" ||
-        init[x]["lineplanningnumber"][0] == "23328" ||
-        init[x]["lineplanningnumber"][0] == "23400"
-      ) {
-        (initToDB =
-          '{"operatingday": ' +
-          JSON.stringify(init[x]["operatingday"][0]) +
-          ", " +
-          '"timestamp": ' +
-          '"' +
-          moment
-            .utc(init[x]["timestamp"][0])
-            .local()
-            .format("YYYY-MM-DD HH:mm:ss") +
-          '"' +
-          ", " +
-          '"lineplanningnumber": ' +
-          JSON.stringify(init[x]["lineplanningnumber"][0]) +
-          ", " +
-          '"journeynumber": ' +
-          JSON.stringify(init[x]["journeynumber"][0]) +
-          ", " +
-          '"blockcode": ' +
-          JSON.stringify(init[x]["blockcode"][0]) +
-          ", " +
-          '"vehiclenumber": ' +
-          JSON.stringify(init[x]["vehiclenumber"][0]) +
-          "}\n"),
-          fs.appendFile("arr.txt", initToDB, (err) => {
-            if (err) throw err;
-          });
-        updateDB(initToDB);
-        init.splice(x, 1);
-      }
+      // if (
+      //   init[x]["lineplanningnumber"][0] == "23325" ||
+      //   init[x]["lineplanningnumber"][0] == "23326" ||
+      //   init[x]["lineplanningnumber"][0] == "23327" ||
+      //   init[x]["lineplanningnumber"][0] == "23328" ||
+      //   init[x]["lineplanningnumber"][0] == "23400"
+      // ) {
+      (initToDB =
+        '{"operatingday": ' +
+        JSON.stringify(init[x]["operatingday"][0]) +
+        ", " +
+        '"timestamp": ' +
+        '"' +
+        moment
+          .utc(init[x]["timestamp"][0])
+          .local()
+          .format("YYYY-MM-DD HH:mm:ss") +
+        '"' +
+        ", " +
+        '"lineplanningnumber": ' +
+        JSON.stringify(init[x]["lineplanningnumber"][0]) +
+        ", " +
+        '"journeynumber": ' +
+        JSON.stringify(init[x]["journeynumber"][0]) +
+        ", " +
+        '"blockcode": ' +
+        JSON.stringify(init[x]["blockcode"][0]) +
+        ", " +
+        '"vehiclenumber": ' +
+        JSON.stringify(init[x]["vehiclenumber"][0]) +
+        "}\n"),
+        fs.appendFile("arr.txt", initToDB, (err) => {
+          if (err) throw err;
+        });
+      updateDB(initToDB);
+      init = [];
+      console.log(init);
+      // }
     }
   }
   if (kv17 != undefined && kv17 != "") {
