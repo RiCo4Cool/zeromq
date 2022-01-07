@@ -123,7 +123,7 @@ setInterval(function oht() {
     });
     kv15 = "";
   }
-}, 5000);
+}, 60000);
 
 sock.on("message", function (topic, message) {
   parseString(zlib.gunzipSync(message).toString(), function (err, result) {
@@ -142,13 +142,17 @@ sock.on("message", function (topic, message) {
       result["VV_TM_PUSH"] != undefined &&
       result["VV_TM_PUSH"]["KV17cvlinfo"] != undefined
     ) {
-      kv17 = result["VV_TM_PUSH"]["KV17cvlinfo"];
+      for (x = 0; x < result["VV_TM_PUSH"]["KV17cvlinfo"][x].length; x++) {
+        kv17.push(result["VV_TM_PUSH"]["KV17cvlinfo"][x]);
+      }
     }
     if (
       result["VV_TM_PUSH"] != undefined &&
       result["VV_TM_PUSH"]["KV15messages"] != undefined
     ) {
-      kv15 = result["VV_TM_PUSH"]["KV15messages"];
+      for (x = 0; x < result["VV_TM_PUSH"]["KV15messages"][x].length; x++) {
+        kv15.push(result["VV_TM_PUSH"]["KV15messages"][x]);
+      }
     }
   });
 });
