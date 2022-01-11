@@ -151,13 +151,13 @@ sock.on("message", function (topic, message) {
       result["VV_TM_PUSH"] != undefined &&
       result["VV_TM_PUSH"]["KV17cvlinfo"] != undefined
     ) {
-      kv17 = result["VV_TM_PUSH"]["KV17cvlinfo"];
+      kv17 = result["VV_TM_PUSH"]["KV17cvlinfo"][0];
     }
     if (
       result["VV_TM_PUSH"] != undefined &&
       result["VV_TM_PUSH"]["KV15messages"] != undefined
     ) {
-      kv15 = result["VV_TM_PUSH"]["KV15messages"];
+      kv15 = result["VV_TM_PUSH"]["KV15messages"][0];
     }
   });
 });
