@@ -8,8 +8,8 @@ var sock = zmq.socket("sub");
 var moment = require("moment");
 var SlackWebhook = require("slack-webhook");
 var init = [];
-var kv15 = "";
-var kv17 = "";
+var kv15 = [];
+var kv17 = [];
 var initToDB = {};
 
 sock.connect("tcp://pubsub.besteffort.ndovloket.nl:7658");
@@ -96,29 +96,23 @@ setInterval(function oht() {
     }
   }
   if (kv17 != undefined && kv17 != "") {
-    fs.appendFile("kv17nl.txt", kv17 + "\n", (err) => {
+    fs.appendFile("kv17nl.txt", JSON.stringify(kv17) + "\n", (err) => {
       if (err) throw err;
     });
-    var kv17_parsed = [];
-    kv17_parsed = JSON.parse(kv17);
     for (x = 0; x < kv17.length; x++) {
       if (
-        kv17_parsed[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23325" ||
-        kv17_parsed[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23326" ||
-        kv17_parsed[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23327" ||
-        kv17_parsed[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23328" ||
-        kv17_parsed[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23400"
+        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23325" ||
+        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23326" ||
+        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23327" ||
+        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23328" ||
+        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23400"
       ) {
-        fs.appendFile(
-          "kv17.txt",
-          JSON.stringify(kv17_parsed[x]) + "\n",
-          (err) => {
-            if (err) throw err;
-          }
-        );
-        updateDBMut('{"KV17JOURNEY":' + JSON.stringify(kv17_parsed[x]) + "}\n");
+        fs.appendFile("kv17.txt", JSON.stringify(kv17[x]) + "\n", (err) => {
+          if (err) throw err;
+        });
+        updateDBMut('{"KV17JOURNEY":' + JSON.stringify(kv17[x]) + "}\n");
         var slack = new SlackWebhook(process.env.SLACKURL);
-        slack.send(JSON.stringify(kv17_parsed)).catch(function (err) {
+        slack.send(JSON.stringify(kv17)).catch(function (err) {
           console.log(err);
         });
       }
@@ -127,7 +121,7 @@ setInterval(function oht() {
   }
 
   if (kv15 != undefined && kv15 != "") {
-    fs.appendFile("kv15.txt", kv15 + "\n", (err) => {
+    fs.appendFile("kv15.txt", JSON.stringify(kv15) + "\n", (err) => {
       if (err) throw err;
     });
     kv15 = "";
@@ -137,7 +131,6 @@ setInterval(function oht() {
 sock.on("message", function (topic, message) {
   parseString(zlib.gunzipSync(message).toString(), function (err, result) {
     if (err) throw err;
-
     if (
       result["VV_TM_PUSH"] != undefined &&
       result["VV_TM_PUSH"]["KV6posinfo"] != undefined &&
@@ -151,13 +144,15 @@ sock.on("message", function (topic, message) {
       result["VV_TM_PUSH"] != undefined &&
       result["VV_TM_PUSH"]["KV17cvlinfo"] != undefined
     ) {
-      kv17 = result["VV_TM_PUSH"]["KV17cvlinfo"][0];
+      console.log(result["VV_TM_PUSH"]["KV17cvlinfo"]);
+      kv17 = result["VV_TM_PUSH"]["KV17cvlinfo"];
     }
     if (
       result["VV_TM_PUSH"] != undefined &&
       result["VV_TM_PUSH"]["KV15messages"] != undefined
     ) {
-      kv15 = result["VV_TM_PUSH"]["KV15messages"][0];
+      console.log(result["VV_TM_PUSH"]["KV15messages"]);
+      kv15 = result["VV_TM_PUSH"]["KV15messages"];
     }
   });
 });
