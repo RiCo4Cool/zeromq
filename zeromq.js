@@ -3,6 +3,7 @@ var fs = require("fs");
 var parseString = require("xml2js").parseString;
 var zlib = require("zlib");
 const { MongoClient } = require("mongodb");
+const util = require("util");
 var zmq = require("zeromq");
 var sock = zmq.socket("sub");
 var moment = require("moment");
@@ -16,7 +17,7 @@ sock.connect("tcp://pubsub.besteffort.ndovloket.nl:7658");
 sock.subscribe("/ARR/");
 console.log("Subscriber connected to port 7658");
 
-async function updateDB(init) {
+async function updateDB(init, dbname) {
   const uri =
     "mongodb+srv://" +
     process.env.DB_NAME +
@@ -28,25 +29,8 @@ async function updateDB(init) {
     useUnifiedTopology: true,
   });
   await client.connect();
-  const collection = client.db("Busoht").collection("oml");
+  const collection = client.db("Busoht").collection(dbname);
   await collection.insertOne(JSON.parse(init));
-  client.close();
-}
-
-async function updateDBMut(mut) {
-  const uri =
-    "mongodb+srv://" +
-    process.env.DB_NAME +
-    ":" +
-    process.env.DB_PASSW +
-    "@cluster0.e56ou.mongodb.net/Busoht?retryWrites=true&w=majority";
-  const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await client.connect();
-  const collection = client.db("Busoht").collection("mut");
-  await collection.insertOne(JSON.parse(mut));
   client.close();
 }
 
@@ -90,12 +74,12 @@ setInterval(function oht() {
           fs.appendFile("arr.txt", initToDB, (err) => {
             if (err) throw err;
           });
-        updateDB(initToDB);
+        updateDB(initToDB, "oml");
         init = [];
       }
     }
   }
-  if (kv17 != undefined && kv17 != "") {
+  if (kv17 != undefined && kv17.length > 0) {
     fs.appendFile("kv17nl.txt", JSON.stringify(kv17) + "\n", (err) => {
       if (err) throw err;
     });
@@ -110,22 +94,25 @@ setInterval(function oht() {
         fs.appendFile("kv17.txt", JSON.stringify(kv17[x]) + "\n", (err) => {
           if (err) throw err;
         });
-        updateDBMut('{"KV17JOURNEY":' + JSON.stringify(kv17[x]) + "}\n");
+        updateDB('{"KV17JOURNEY":' + JSON.stringify(kv17[x]) + "}\n", "mut");
         var slack = new SlackWebhook(process.env.SLACKURL);
         slack.send(JSON.stringify(kv17)).catch(function (err) {
           console.log(err);
         });
       }
     }
-    kv17 = "";
+    kv17 = [];
   }
 
-  if (kv15 != undefined && kv15 != "") {
+  if (kv15 != undefined && kv15.length > 0) {
     fs.appendFile("kv15.txt", JSON.stringify(kv15) + "\n", (err) => {
       if (err) throw err;
     });
-    kv15 = "";
+    for (x = 0; x < kv15.length; x++) {
+      updateDB('{"KV15messages":' + JSON.stringify(kv15[x]) + "}\n", "mess");
+    }
   }
+  kv15 = [];
 }, 60000);
 
 sock.on("message", function (topic, message) {
@@ -144,7 +131,6 @@ sock.on("message", function (topic, message) {
       result["VV_TM_PUSH"] != undefined &&
       result["VV_TM_PUSH"]["KV17cvlinfo"] != undefined
     ) {
-      console.log(result["VV_TM_PUSH"]["KV17cvlinfo"]);
       for (x = 0; x < result["VV_TM_PUSH"]["KV17cvlinfo"].length; x++) {
         kv17.push(result["VV_TM_PUSH"]["KV17cvlinfo"][x]);
       }
@@ -153,7 +139,9 @@ sock.on("message", function (topic, message) {
       result["VV_TM_PUSH"] != undefined &&
       result["VV_TM_PUSH"]["KV15messages"] != undefined
     ) {
-      console.log(result["VV_TM_PUSH"]["KV15messages"]);
+      console.log(
+        util.inspect(result["VV_TM_PUSH"]["KV15messages"], false, null, true)
+      );
       for (X = 0; X < result["VV_TM_PUSH"]["KV15messages"].length; x++) {
         kv15.push(result["VV_TM_PUSH"]["KV15messages"][x]);
       }
