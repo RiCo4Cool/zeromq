@@ -112,8 +112,8 @@ setInterval(function oht() {
     for (x = 0; x < kv15.length; x++) {
       updateDB('{"KV15messages":' + JSON.stringify(kv15[x]) + "}\n", "mess");
     }
+    kv15 = [];
   }
-  kv15 = [];
 }, 60000);
 
 sock.on("message", function (topic, message) {
@@ -140,7 +140,7 @@ sock.on("message", function (topic, message) {
       result["VV_TM_PUSH"] != undefined &&
       result["VV_TM_PUSH"]["KV15messages"] != undefined
     ) {
-      for (X = 0; X < result["VV_TM_PUSH"]["KV15messages"].length; x++) {
+      for (x = 0; x < result["VV_TM_PUSH"]["KV15messages"].length; x++) {
         kv15.push(result["VV_TM_PUSH"]["KV15messages"][x]);
         console.log(
           util.inspect(
