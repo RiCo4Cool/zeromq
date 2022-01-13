@@ -80,9 +80,6 @@ setInterval(function oht() {
     }
   }
   if (kv17 != undefined && kv17.length > 0) {
-    fs.appendFile("kv17nl.txt", JSON.stringify(kv17) + "\n", (err) => {
-      if (err) throw err;
-    });
     for (x = 0; x < kv17.length; x++) {
       if (
         kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23325" ||
@@ -100,6 +97,10 @@ setInterval(function oht() {
           console.log(err);
         });
       }
+      fs.appendFile("kv17nl.txt", JSON.stringify(kv17[x]) + "\n", (err) => {
+        if (err) throw err;
+      });
+      console.log(util.inspect(kv17[x], false, null, true));
     }
     kv17 = [];
   }
@@ -139,11 +140,16 @@ sock.on("message", function (topic, message) {
       result["VV_TM_PUSH"] != undefined &&
       result["VV_TM_PUSH"]["KV15messages"] != undefined
     ) {
-      console.log(
-        util.inspect(result["VV_TM_PUSH"]["KV15messages"], false, null, true)
-      );
       for (X = 0; X < result["VV_TM_PUSH"]["KV15messages"].length; x++) {
         kv15.push(result["VV_TM_PUSH"]["KV15messages"][x]);
+        console.log(
+          util.inspect(
+            result["VV_TM_PUSH"]["KV15messages"][x],
+            false,
+            null,
+            true
+          )
+        );
       }
     }
   });
