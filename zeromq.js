@@ -93,9 +93,21 @@ setInterval(function oht() {
         });
         updateDB('{"KV17JOURNEY":' + JSON.stringify(kv17[x]) + "}\n", "mut");
         var slack = new SlackWebhook(process.env.SLACKURL);
-        slack.send(JSON.stringify(kv17)).catch(function (err) {
-          console.log(err);
-        });
+        slack
+          .send(
+            "https://drgl.nl/journey/ARR:" +
+              kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] +
+              ":" +
+              kv17[x]["KV17JOURNEY"][0]["journeynumber"][0] +
+              "/" +
+              kv17[x]["KV17JOURNEY"][0]["operatingday"][0].replace(/-/g, "") +
+              "/" +
+              "\n" +
+              JSON.stringify(kv17[x])
+          )
+          .catch(function (err) {
+            console.log(err);
+          });
       }
       fs.appendFile("kv17nl.txt", JSON.stringify(kv17[x]) + "\n", (err) => {
         if (err) throw err;
