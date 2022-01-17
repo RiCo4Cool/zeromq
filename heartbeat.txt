@@ -1,1 +1,14 @@
 {Mon Jan 17 2022 16:23:15 GMT+0100 (Central European Standard Time), 42}
+{Mon Jan 17 2022 16:24:15 GMT+0100 (Central European Standard Time), 308}
+{Mon Jan 17 2022 16:25:15 GMT+0100 (Central European Standard Time), 194}
+{Mon Jan 17 2022 16:26:15 GMT+0100 (Central European Standard Time), 1039}
+{Mon Jan 17 2022 16:27:15 GMT+0100 (Central European Standard Time), 467}
+{Mon Jan 17 2022 16:28:15 GMT+0100 (Central European Standard Time), 122}
+{Mon Jan 17 2022 16:29:15 GMT+0100 (Central European Standard Time), 520}
+{Mon Jan 17 2022 16:30:15 GMT+0100 (Central European Standard Time), 854}
+{Mon Jan 17 2022 16:31:15 GMT+0100 (Central European Standard Time), 559}
+{Mon Jan 17 2022 16:32:15 GMT+0100 (Central European Standard Time), 1376}
+{Mon Jan 17 2022 16:33:15 GMT+0100 (Central European Standard Time), 184}
+{Mon Jan 17 2022 16:34:15 GMT+0100 (Central European Standard Time), 1178}
+{Mon Jan 17 2022 16:37:15 GMT+0100 (Central European Standard Time), 313}
+{Mon Jan 17 2022 16:38:15 GMT+0100 (Central European Standard Time), 743}

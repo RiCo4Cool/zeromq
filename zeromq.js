@@ -36,13 +36,13 @@ async function updateDB(init, dbname) {
 }
 
 setInterval(function oht() {
-  if (Date.now() - messagetime > 3) {
+  if (new Date().getTime() - messagetime.getTime() > 300000) {
     fs.appendFile(
       "heartbeat.txt",
       "{" +
         new Date().toString() +
         ", " +
-        (Date.now() - messagetime).toString() +
+        (new Date().getTime() - messagetime.getTime()).toString() +
         "}\n",
       (err) => {
         if (err) throw err;
@@ -143,7 +143,7 @@ setInterval(function oht() {
 }, 60000);
 
 sock.on("message", function (topic, message) {
-  messagetime = Date.now();
+  messagetime = new Date();
   parseString(zlib.gunzipSync(message).toString(), function (err, result) {
     if (err) throw err;
     if (
