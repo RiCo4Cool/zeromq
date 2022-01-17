@@ -12,6 +12,7 @@ var init = [];
 var kv15 = [];
 var kv17 = [];
 var initToDB = {};
+var messagetime;
 
 sock.connect("tcp://pubsub.besteffort.ndovloket.nl:7658");
 sock.subscribe("/ARR/");
@@ -35,6 +36,19 @@ async function updateDB(init, dbname) {
 }
 
 setInterval(function oht() {
+  if (Date.now() - messagetime > 3) {
+    fs.appendFile(
+      "heartbeat.txt",
+      "{" +
+        new Date().toString() +
+        ", " +
+        (Date.now() - messagetime).toString() +
+        "}\n",
+      (err) => {
+        if (err) throw err;
+      }
+    );
+  }
   if (init != undefined) {
     for (x = 0; x < init.length; x++) {
       if (
@@ -129,6 +143,7 @@ setInterval(function oht() {
 }, 60000);
 
 sock.on("message", function (topic, message) {
+  messagetime = Date.now();
   parseString(zlib.gunzipSync(message).toString(), function (err, result) {
     if (err) throw err;
     if (
