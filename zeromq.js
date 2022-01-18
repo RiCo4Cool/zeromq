@@ -14,9 +14,12 @@ var kv17 = [];
 var initToDB = {};
 var messagetime;
 
-sock.connect("tcp://pubsub.besteffort.ndovloket.nl:7658");
-sock.subscribe("/ARR/");
-console.log("Subscriber connected to port 7658");
+function sockConnect() {
+  sock.connect("tcp://pubsub.besteffort.ndovloket.nl:7658");
+  sock.subscribe("/ARR/");
+  console.log("Subscriber connected to port 7658");
+}
+sockConnect();
 
 async function updateDB(init, dbname) {
   const uri =
@@ -37,6 +40,7 @@ async function updateDB(init, dbname) {
 
 setInterval(function oht() {
   if (new Date().getTime() - messagetime.getTime() > 300000) {
+    sockConnect();
     fs.appendFile(
       "heartbeat.txt",
       "{" +
@@ -56,7 +60,8 @@ setInterval(function oht() {
         init[x]["lineplanningnumber"][0] == "23326" ||
         init[x]["lineplanningnumber"][0] == "23327" ||
         init[x]["lineplanningnumber"][0] == "23328" ||
-        init[x]["lineplanningnumber"][0] == "23400"
+        init[x]["lineplanningnumber"][0] == "23400" ||
+        init[x]["lineplanningnumber"][0] == "23401"
       ) {
         (initToDB =
           '{"operatingday": ' +
@@ -100,7 +105,8 @@ setInterval(function oht() {
         kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23326" ||
         kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23327" ||
         kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23328" ||
-        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23400"
+        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23400" ||
+        kv17[x]["KV17JOURNEY"][0]["lineplanningnumber"][0] == "23401"
       ) {
         fs.appendFile("kv17.txt", JSON.stringify(kv17[x]) + "\n", (err) => {
           if (err) throw err;
