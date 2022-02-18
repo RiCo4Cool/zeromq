@@ -143,6 +143,7 @@ setInterval(function oht() {
     });
     for (x = 0; x < kv15.length; x++) {
       updateDB('{"KV15messages":' + JSON.stringify(kv15[x]) + "}\n", "mess");
+      console.log(util.inspect(kv15[x], false, null, true));
     }
     kv15 = [];
   }
@@ -175,14 +176,6 @@ sock.on("message", function (topic, message) {
     ) {
       for (x = 0; x < result["VV_TM_PUSH"]["KV15messages"].length; x++) {
         kv15.push(result["VV_TM_PUSH"]["KV15messages"][x]);
-        console.log(
-          util.inspect(
-            result["VV_TM_PUSH"]["KV15messages"][x],
-            false,
-            null,
-            true
-          )
-        );
       }
     }
   });
